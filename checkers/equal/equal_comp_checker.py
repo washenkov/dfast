@@ -32,13 +32,8 @@ class EqualComparisonChecker(equal_checker.EqualChecker):
     def __init__(self):
         super(EqualComparisonChecker, self).__init__()
 
-    def check(self, ast_vertex, source_file):  # todo: divide it by functions
-        if not isinstance(ast_vertex, ast.AST):
-            raise TypeError('Error: arg \"ast_vertex\" is not an instance \
-                            of \"ast.AST\"!')
-        if not isinstance(source_file, file):
-            raise TypeError('Error: arg \"source_file\" is not an instance \
-                            of \"file\"!')
+    def check(self, ast_vertex, source_file):  # todo: refactor this
+        super(EqualComparisonChecker, self).check(ast_vertex, source_file)
 
         if isinstance(ast_vertex, ast.Compare):
             arg1 = ast_vertex.left

@@ -55,12 +55,7 @@ class EqualChecker(checkers.abstract.checker.Checker):
 
         """
 
-        if not isinstance(ast_vertex, ast.AST):
-            raise TypeError('Error: arg \"ast_vertex\" is not an instance \
-                            of \"ast.AST\"!')
-        if not isinstance(source_file, file):
-            raise TypeError('Error: arg \"source_file\" is not an instance \
-                            of \"file\"!')
+        super(EqualChecker, self)._get_code_snippet(ast_vertex, source_file)
 
         snippet = ''
         first_line_idx = ast_vertex.lineno - self.SNIPPET_RADIUS - 1
@@ -86,20 +81,7 @@ class EqualChecker(checkers.abstract.checker.Checker):
 
         """
 
-        vertex_hash = str(ast_vertex.__class__)
-
-        if isinstance(ast_vertex, list) | isinstance(ast_vertex, tuple):
-            for item in ast_vertex:
-                vertex_hash = vertex_hash + self.__get_ast_vertex_hash(self, item)
-            return vertex_hash  # todo: change to or
-        elif isinstance(ast_vertex, str) | isinstance(ast_vertex, int) | isinstance(ast_vertex, float) | \
-                isinstance(ast_vertex, type(None)) | isinstance(ast_vertex, unicode) | \
-                isinstance(ast_vertex, complex):  # todo: here should be all possible types!
-            return vertex_hash + str(ast_vertex)
-        else:
-            for field in ast.iter_fields(ast_vertex):
-                vertex_hash += self.__get_ast_vertex_hash(self, field)
-            return vertex_hash
+        return ast.dump(ast_vertex)
 
     @staticmethod
     def _are_equal(self, ast_vertex1, ast_vertex2):
@@ -133,4 +115,4 @@ class EqualChecker(checkers.abstract.checker.Checker):
 
     @abstractmethod
     def check(self, ast_vertex, source_file):
-        pass
+        super(EqualChecker, self).check(ast_vertex, source_file)

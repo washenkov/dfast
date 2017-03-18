@@ -172,7 +172,12 @@ class Checker(object):
             ValueError: If "source_file" is closed.
 
         """
-        pass
+        if not isinstance(ast_vertex, ast.AST):
+            raise TypeError('Error: arg \"ast_vertex\" is not an instance \
+                            of \"ast.AST\"!')
+        if not isinstance(source_file, file):
+            raise TypeError('Error: arg \"source_file\" is not an instance \
+                            of \"file\"!')
 
     @abstractmethod
     def check(self, ast_vertex, source_file):
@@ -193,4 +198,9 @@ class Checker(object):
 
         """
 
-        pass
+        if not isinstance(ast_vertex, ast.AST):
+            raise TypeError('Error: arg \"ast_vertex\" is not an instance \
+                            of \"ast.AST\"!')
+        if not isinstance(source_file, file):
+            raise TypeError('Error: arg \"source_file\" is not an instance \
+                            of \"file\"!')

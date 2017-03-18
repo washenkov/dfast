@@ -30,6 +30,7 @@ import ast
 
 import checkers.equal.equal_bool_op_checker as equal_bool_op_checker
 import checkers.equal.equal_comp_checker as equal_comp_checker
+import checkers.equal.equal_if_branches_checker as equal_if_branches_checker
 
 
 def walk(checker_list, source_file):
@@ -55,14 +56,13 @@ def check_path(source_path_p):
 
             checkers = [
                 equal_bool_op_checker.EqualBoolOpChecker(),
-                equal_comp_checker.EqualComparisonChecker()
+                equal_comp_checker.EqualComparisonChecker(),
+                equal_if_branches_checker.EqualIfBranchesChecker()
             ]
 
             try:
                 walk(checkers, source_file)
             except SyntaxError:
-                print 'Parsing failed!'
-            except StandardError:
                 print 'Parsing failed!'
             source_file.close()
             show_issues(checkers)
