@@ -27,10 +27,16 @@ import checkers.abstract.checker as checker
 
 
 class EqualComparisonChecker(equal_checker.EqualChecker):
-    """The class represents equal comparison operation checker."""
+    """The class represents equal comparison operation checker.
+
+    Attributes:
+        ERROR_MSG (str): A message which describes the problem.
+
+    """
 
     def __init__(self):
         super(EqualComparisonChecker, self).__init__()
+        self.ERROR_MSG = "comparison of equal arguments"
 
     def check(self, ast_vertex, source_file):  # todo: refactor this
         super(EqualComparisonChecker, self).check(ast_vertex, source_file)
@@ -38,15 +44,8 @@ class EqualComparisonChecker(equal_checker.EqualChecker):
         if isinstance(ast_vertex, ast.Compare):
             arg1 = ast_vertex.left
             for arg2 in ast_vertex.comparators:
-                if self._are_equal(self, arg1, arg2):
-                    issue_loc = checker.IssueLocation(ast_vertex, source_file)
-                    explanation = "comparison of equal arguments"
-                    code_snippet = self._get_code_snippet(ast_vertex,
-                                                          source_file)
-                    issue = checker.Issue(issue_loc, explanation,
-                                          code_snippet)
-
-                    self.statistics.add_issue(issue)
+                if self._are_equal_ast_vertices(self, arg1, arg2):
+                    self.raise_issue(ast_vertex, source_file, self.ERROR_MSG)
                     return True
                 arg1 = arg2
         return False

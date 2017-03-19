@@ -24,11 +24,17 @@ import checkers.equal.abstract.equal_checker as equal_checker
 from checkers.abstract import checker
 
 
-class EqualIfBranchesChecker(equal_checker.EqualChecker):
-    """The class represents equal if and elif conditions checker."""
+class EqualIfConditionsChecker(equal_checker.EqualChecker):
+    """The class represents equal if and elif conditions checker.
+
+    Attributes:
+        ERROR_MSG (str): A message which describes the problem.
+
+    """
 
     def __init__(self):
-        super(EqualIfBranchesChecker, self).__init__()
+        super(EqualIfConditionsChecker, self).__init__()
+        self.ERROR_MSG = "if branches with equal conditions"
 
     def _get_code_snippet(self, ast_vertex, source_file):
         super(equal_checker.EqualChecker, self).\
@@ -39,7 +45,7 @@ class EqualIfBranchesChecker(equal_checker.EqualChecker):
 
         for else_vertex in ast_vertex.orelse:
             if isinstance(else_vertex, ast.If):
-                if self._are_equal(self, ast_vertex.test, else_vertex.test):
+                if self._are_equal_ast_vertices(self, ast_vertex.test, else_vertex.test):
                     last_line_idx = else_vertex.lineno + \
                                     self.SNIPPET_RADIUS - 1
 
@@ -52,20 +58,13 @@ class EqualIfBranchesChecker(equal_checker.EqualChecker):
         return snippet
 
     def check(self, ast_vertex, source_file):  # todo: refactor this
-        super(EqualIfBranchesChecker, self).check(ast_vertex, source_file)
+        super(EqualIfConditionsChecker, self).check(ast_vertex, source_file)
 
         if isinstance(ast_vertex, ast.If):
             for else_vertex in ast_vertex.orelse:
-                if isinstance(else_vertex, ast.If):
-                    if self._are_equal(self, ast_vertex.test, else_vertex.test):
-                        if ast_vertex.col_offset == else_vertex.col_offset - 5:  # todo: it's a magic!
-                            issue_loc = checker.IssueLocation(ast_vertex, source_file)
-                            explanation = "if branches with equal conditions"
-                            code_snippet = self._get_code_snippet(ast_vertex,
-                                                                  source_file)
-                            issue = checker.Issue(issue_loc, explanation,
-                                                  code_snippet)
-
-                            self.statistics.add_issue(issue)
-                            return True
+                if isinstance(else_vertex, ast.If) and \
+                   self._are_equal_ast_vertices(self, ast_vertex.test, else_vertex.test):
+                    if ast_vertex.col_offset == else_vertex.col_offset - 5:  # todo: it's a magic number!
+                        self.raise_issue(ast_vertex, source_file, self.ERROR_MSG)
+                        return True
         return False

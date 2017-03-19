@@ -30,6 +30,7 @@ import ast
 
 import checkers.equal.equal_bool_op_checker as equal_bool_op_checker
 import checkers.equal.equal_comp_checker as equal_comp_checker
+import checkers.equal.equal_elif_conditions_checker as equal_elif_conditions_checker
 import checkers.equal.equal_if_branches_checker as equal_if_branches_checker
 
 
@@ -57,6 +58,7 @@ def check_path(source_path_p):
             checkers = [
                 equal_bool_op_checker.EqualBoolOpChecker(),
                 equal_comp_checker.EqualComparisonChecker(),
+                equal_elif_conditions_checker.EqualIfConditionsChecker(),
                 equal_if_branches_checker.EqualIfBranchesChecker()
             ]
 

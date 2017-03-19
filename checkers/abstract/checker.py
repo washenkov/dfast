@@ -179,6 +179,15 @@ class Checker(object):
             raise TypeError('Error: arg \"source_file\" is not an instance \
                             of \"file\"!')
 
+    def raise_issue(self, ast_vertex, source_file, err_msg):
+        """Adds an issue to the class statistics."""
+
+        issue_loc = IssueLocation(ast_vertex, source_file)
+        code_snippet = self._get_code_snippet(ast_vertex, source_file)
+        issue = Issue(issue_loc, err_msg, code_snippet)
+
+        self.statistics.add_issue(issue)
+
     @abstractmethod
     def check(self, ast_vertex, source_file):
         """Checks the "ast_vertex" and add a new issue to the statistics,

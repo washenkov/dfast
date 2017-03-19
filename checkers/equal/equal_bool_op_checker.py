@@ -26,10 +26,16 @@ from checkers.abstract import checker
 
 
 class EqualBoolOpChecker(equal_checker.EqualChecker):
-    """The class represents equal boolean operation checker."""
+    """The class represents equal boolean operation checker.
+
+    Attributes:
+        ERROR_MSG (str): A message which describes the problem.
+
+    """
 
     def __init__(self):
         super(EqualBoolOpChecker, self).__init__()
+        self.ERROR_MSG = "boolean operation with equal arguments"
 
     def check(self, ast_vertex, source_file):  # todo: refactor this
         super(EqualBoolOpChecker, self).check(ast_vertex, source_file)
@@ -42,15 +48,7 @@ class EqualBoolOpChecker(equal_checker.EqualChecker):
                     arg1 = ast_vertex.values[arg1_idx]
                     arg2 = ast_vertex.values[arg2_idx]
 
-                    if self._are_equal(self, arg1, arg2):
-                        issue_loc = checker.IssueLocation(ast_vertex,
-                                                          source_file)
-                        explanation = "boolean operation with equal arguments"
-                        code_snippet = self._get_code_snippet(ast_vertex,
-                                                              source_file)
-                        issue = checker.Issue(issue_loc, explanation,
-                                              code_snippet)
-
-                        self.statistics.add_issue(issue)
+                    if self._are_equal_ast_vertices(self, arg1, arg2):
+                        self.raise_issue(ast_vertex, source_file, self.ERROR_MSG)
                         return True
         return False

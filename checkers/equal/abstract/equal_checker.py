@@ -79,20 +79,27 @@ class EqualChecker(checkers.abstract.checker.Checker):
             Returns:
                 Hash of the node as a string.
 
+            Raises:
+                TypeError: If arg "ast_vertex" is not an instance of "ast.AST".
+
         """
+
+        if not isinstance(ast_vertex, ast.AST):
+            raise TypeError('Error: arg \"ast_vertex\" is not an instance \
+                            of \"ast.AST\"!')
 
         return ast.dump(ast_vertex)
 
     @staticmethod
-    def _are_equal(self, ast_vertex1, ast_vertex2):
-        """Return True if the vertexes are equal, False otherwise.
+    def _are_equal_ast_vertices(self, ast_vertex1, ast_vertex2):
+        """Return True if the vertices are equal, False otherwise.
 
         Args:
             ast_vertex1 (ast.AST): The first vertex of AST to compare.
             ast_vertex2 (ast.AST): The second vertex of AST to compare.
 
         Returns:
-            True if the vertexes are equal, False otherwise.
+            True if the vertices are equal, False otherwise.
 
         Raises:
             TypeError: If arg "ast_vertex1" or "ast_vertex2" is not an instance
@@ -113,6 +120,39 @@ class EqualChecker(checkers.abstract.checker.Checker):
         else:
             return False
 
-    @abstractmethod
-    def check(self, ast_vertex, source_file):
-        super(EqualChecker, self).check(ast_vertex, source_file)
+    @staticmethod
+    def _are_equal_lists_of_ast(self, ast_vertex_list1, ast_vertex_list2):
+        """Return True if the lists of ast vertices are equal, False otherwise.
+
+            Args:
+                ast_vertex_list1 (list): The first list of AST vertices
+                to compare.
+                ast_vertex_list2 (list): The second list of AST vertices
+                to compare.
+
+            Returns:
+                True if the vertices are equal, False otherwise.
+
+            Raises:
+                TypeError: If arg "ast_vertex_list1" or "ast_vertex_list2" is
+                not an instance of "list".
+
+        """
+
+        if not isinstance(ast_vertex_list1, list):
+            raise TypeError('Error: arg \"ast_vertex_list1\" is not \
+                             an instance of \"list\"!')
+        if not isinstance(ast_vertex_list2, list):
+            raise TypeError('Error: arg \"ast_vertex_list2\" is not \
+                             an instance of \"list\"!')
+
+        if len(ast_vertex_list1) == len(ast_vertex_list2):
+            for i in range(len(ast_vertex_list1)):
+                ast_vertex1 = ast_vertex_list1[i]
+                ast_vertex2 = ast_vertex_list2[i]
+
+                if not self._are_equal_ast_vertices(self, ast_vertex1, ast_vertex2):
+                    return False
+            return True
+        else:
+            return False
